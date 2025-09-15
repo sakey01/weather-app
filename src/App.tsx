@@ -4,7 +4,6 @@ import { Droplet, Search, Thermometer } from "lucide-react";
 
 type WeatherData = {
   current: {
-    cloud: number;
     condition: {
       text: string;
       icon: string;
@@ -41,9 +40,9 @@ function App() {
         );
 
         if (!res.ok) {
-          setStatus("Failed");
+          setStatus("Location Not Found. Try Again.");
           return;
-        }
+        } else setStatus(null);
 
         const data = await res.json();
 
@@ -59,13 +58,13 @@ function App() {
   }, [city]);
 
   return (
-    <div className="flex flex-col min-w-screen min-h-screen items-center justify-center gap-4 shadow bg-blue-400">
+    <div className="flex flex-col min-w-screen min-h-screen items-center justify-center gap-6 shadow bg-blue-400">
       {/* Search container */}
-      <div className="flex justify-center items-center gap-2 rounded shadow-md bg-white p-3">
+      <div className="flex justify-center items-center gap-4 rounded shadow-md bg-white p-3">
         <input
           type="text"
           name="search"
-          className="p-1 focus:outline-none rounded"
+          className="p-1 min-w-90 focus:outline-none rounded"
           placeholder="Enter a city name"
           autoComplete="off"
           autoFocus
@@ -78,6 +77,7 @@ function App() {
             if (e.key === "Enter") {
               handleSearch();
             }
+            if (status !== null) setStatus(null);
           }}
         />
         <button
@@ -88,12 +88,12 @@ function App() {
         </button>
       </div>
 
-      {status && <div>{status}</div>}
+      {status && <div className="text-xl font-semibold text-red-700 my-6">{status}</div>}
       {/* Weather data container */}
       {data ? (
         <div className="flex flex-col items-center p-5 rounded shadow-md bg-white gap-2">
           <img src={data.current.condition.icon} alt="weather icon" />
-          <div className="text-3xl">{data.current.temp_c}°C</div>
+          <div className="text-3xl mb-2">{data.current.temp_c}°C</div>
           <div>{data.current.condition.text}</div>
           <div>{data.location.region}</div>
 
