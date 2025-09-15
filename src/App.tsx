@@ -1,6 +1,6 @@
 import "./App.css";
 import { useEffect, useState } from "react";
-import { Search } from "lucide-react";
+import { Droplet, Search, Thermometer } from "lucide-react";
 
 type WeatherData = {
   current: {
@@ -21,7 +21,14 @@ type WeatherData = {
 function App() {
   const [search, setSearch] = useState<string>("");
   const [city, setCity] = useState<string>("London");
+  const [status, setStatus] = useState<string | null>(null);
   const [data, setData] = useState<WeatherData | null>(null);
+
+  // updates city data
+  const handleSearch = () => {
+    if (city === "") return;
+    setCity(search);
+  };
 
   // Use effect to get location on mount + update on search button click
   useEffect(() => {
@@ -32,6 +39,11 @@ function App() {
         const res = await fetch(
           `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${city}&aqi=no`
         );
+
+        if (!res.ok) {
+          setStatus("Failed");
+          return;
+        }
 
         const data = await res.json();
 
@@ -49,11 +61,11 @@ function App() {
   return (
     <div className="flex flex-col min-w-screen min-h-screen items-center justify-center gap-4 shadow bg-blue-400">
       {/* Search container */}
-      <div className="flex justify-center items-center gap-2 rounded shadow-md bg-white p-4">
+      <div className="flex justify-center items-center gap-2 rounded shadow-md bg-white p-3">
         <input
           type="text"
           name="search"
-          className="p-1"
+          className="p-1 focus:outline-none rounded"
           placeholder="Enter a city name"
           autoComplete="off"
           autoFocus
@@ -62,29 +74,44 @@ function App() {
           onChange={(e) => {
             setSearch(e.target.value);
           }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleSearch();
+            }
+          }}
         />
         <button
-          onClick={() => {
-            setCity(search);
-          }}
-          className="btn"
+          onClick={() => handleSearch()}
+          className="cursor-pointer rounded hover:bg-gray-200 p-1"
         >
           <Search size={16} className="w-5 h-5"></Search>
         </button>
       </div>
+
+      {status && <div>{status}</div>}
       {/* Weather data container */}
       {data ? (
-        <div className="flex flex-col items-center rounded shadow-md bg-white p-5 gap-2">
+        <div className="flex flex-col items-center p-5 rounded shadow-md bg-white gap-2">
           <img src={data.current.condition.icon} alt="weather icon" />
-          <div className="text-2xl">{data.current.temp_c}°C</div>
+          <div className="text-3xl">{data.current.temp_c}°C</div>
           <div>{data.current.condition.text}</div>
           <div>{data.location.region}</div>
-          <div className="flex gap-1">
-            <div className="flex flex-col items-center p-4">
-              Feels Like: <span>{data.current.feelslike_c}</span>
+
+          {/* Temparature it feels like stat */}
+          <div className="flex gap-1 border-t-2 mt-4 justify-center w-full border-gray-300">
+            <div className="flex items-center p-4 gap-2 border-r-2 border-gray-300">
+              <Thermometer size={32} color="#D1D5DB"></Thermometer>
+              <div className="flex flex-col text-sm">
+                <span>{data.current.feelslike_c}°C</span>Feels Like
+              </div>
             </div>
-            <div className="flex flex-col items-center p-4">
-              humidity: <span>{data.current.humidity}</span>{" "}
+
+            {/* Humidity stat */}
+            <div className="flex items-center p-4 gap-2">
+              <Droplet size={32} color="#D1D5DB"></Droplet>
+              <div className="flex flex-col text-sm">
+                <span>{data.current.humidity}%</span>Humidity
+              </div>
             </div>
           </div>
         </div>
