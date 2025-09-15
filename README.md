@@ -8,9 +8,10 @@ You can select any place in the world and get information on the temperature, we
 
 ```React```
 ```Vite```
-```TailwindCSS```
+```Tailwindcss```
 ```Weather API```
 
 ## 🎥 Preview
 
 https://github.com/user-attachments/assets/8ef7ed79-c05e-4b4d-b4a8-2d4f84b62297
+
