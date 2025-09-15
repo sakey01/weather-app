@@ -13,5 +13,4 @@ You can select any place in the world and get information on the temperature, we
 
 ## 🎥 Preview
 
-https://github.com/user-attachments/assets/8ef7ed79-c05e-4b4d-b4a8-2d4f84b62297
-
+https://github.com/user-attachments/assets/ec0e6285-e89d-48d6-99f8-8c789417292b
